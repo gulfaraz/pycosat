@@ -3330,10 +3330,12 @@ relemhead (PS * ps, const char * name, int fp, double val)
 inline static void
 relem (PS * ps, const char *name, int fp, double val)
 {
+  /*
   if (name)
     relemhead (ps, name, fp, val);
   else
     relemdata (ps);
+  */
 }
 
 static unsigned
@@ -3364,8 +3366,9 @@ report (PS * ps, int replevel, char type)
   for (rounds = (ps->reports < 0) ? 2 : 1; rounds; rounds--)
     {
       if (ps->reports >= 0)
-         fprintf (ps->out, "%s%c ", ps->prefix, type);
+         fprintf (ps->out, "%s%c ", "", type);
 
+      fprintf(ps->out, "%0.2f,%0.2f,%d,%0.1f,%d,%d,%d,%d,%0.2f,%0.2f,%d,%0.2f\n", ps->seconds, avglevel (ps), ps->max_var - ps->fixed, PERCENT (ps->vused, ps->max_var), ps->noclauses, ps->conflicts, ps->nlclauses, ps->lreduce, dynamic_flips_per_assignment_per_mille (ps) / 10.0, mb (ps), ps->decisions, PERCENT(ps->conflicts,ps->decisions));
       relem (ps, "seconds", 1, ps->seconds);
       relem (ps, "level", 1, avglevel (ps));
       assert (ps->fixed <=  ps->max_var);
@@ -3388,10 +3391,11 @@ report (PS * ps, int replevel, char type)
       // relem (ps, "lladded", 0, ps->lladded);
       // relem (ps, "llused", 0, ps->llused);
 
-      relem (ps, 0, 0, 0);
+      //relem (ps, 0, 0, 0);
 
       ps->reports++;
     }
+  fprintf(ps->out, "------------------------------\n");
 
   /* Adapt this to the number of rows in your terminal.
    */
@@ -5455,7 +5459,7 @@ simplify (PS * ps, int forced)
   ps->fsimplify = ps->fixed;
   ps->simps++;
 
-  report (ps, 1, 's');
+  //report (ps, 1, 's');
 }
 
 static void
@@ -5625,10 +5629,11 @@ init_reduce (PS * ps)
   if (ps->lreduce < 100)
     ps->lreduce = 100;
 
+  /*
   if (ps->verbosity)
      fprintf (ps->out,
              "%s\n%sinitial reduction limit %u clauses\n%s\n",
-             ps->prefix, ps->prefix, ps->lreduce, ps->prefix);
+             ps->prefix, ps->prefix, ps->lreduce, ps->prefix);*/
 }
 
 static unsigned
@@ -6837,6 +6842,7 @@ void
 picosat_reset (PS * ps)
 {
   check_ready (ps);
+  fprintf (ps->out, "==============================\n");
   reset (ps);
 }
 
